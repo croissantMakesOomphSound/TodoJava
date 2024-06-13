@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="140.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.DeleteConfirmationController">
+   <children>
+      <Button layoutX="266.0" layoutY="101.0" mnemonicParsing="false" text="Delete" onAction="#DeleteButton"/>
+      <Button layoutX="333.0" layoutY="101.0" mnemonicParsing="false" text="Cancel" onAction="#CancelButton" />
+      <Label layoutX="34.0" layoutY="33.0" prefHeight="18.0" prefWidth="353.0" text="Are You Sure You wan to delete this Permanently?" />
+      <Label layoutX="34.0" layoutY="62.0" prefHeight="18.0" prefWidth="338.0" text="Label" fx:id="label"/>
+   </children>
+</AnchorPane>

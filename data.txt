@@ -1,0 +1,11 @@
+apple
+buy apples
+to add editemail
+to add editpassword
+to add reminder for calender
+to add security questions
+to add newuser
+to add error for no input
+to complete date/ list reading capability of reminder
+to do changepassword
+to add undo in all change

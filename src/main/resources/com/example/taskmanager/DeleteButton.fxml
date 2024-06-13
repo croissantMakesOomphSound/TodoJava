@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="140.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.DeleteButtonController">
+    <children>
+        <ChoiceBox fx:id="choicebox" layoutX="14.0" layoutY="57.0" prefHeight="26.0" prefWidth="362.0" />
+        <Label layoutX="18.0" layoutY="20.0" prefHeight="18.0" prefWidth="262.0" text="Select one that you want to delete" />
+        <Button layoutX="255.0" layoutY="100.0" mnemonicParsing="false" onAction="#DeleteButton" text="Delete" />
+        <Button layoutX="325.0" layoutY="100.0" mnemonicParsing="false" onAction="#CancelButton" text="Cancel" />
+      <Label fx:id ="label" layoutX="14.0" layoutY="104.0" prefHeight="18.0" prefWidth="213.0" />
+    </children>
+</AnchorPane>
