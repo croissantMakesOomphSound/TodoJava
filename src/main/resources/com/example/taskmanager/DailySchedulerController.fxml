@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calender.DailySchedulerController">
+    <children>
+        <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" prefWidth="800.0" prefHeight="400.0">
+            <HBox spacing="10.0">
+                <DatePicker fx:id="datePicker" onAction="#showTasksForSelectedDate" />
+                <Text fx:id="currentDateText" />
+            </HBox>
+
+            <HBox spacing="10.0">
+                <Label text="Time:" />
+                <TextField fx:id="timeInput" prefWidth="100.0" promptText="Enter time" />
+                <Label text="Task:" />
+                <TextField fx:id="taskInput" prefWidth="200.0" promptText="Enter task" />
+            </HBox>
+
+            <HBox spacing="10.0">
+                <Label text="Category:" />
+                <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
+                <Label text="Notes:" />
+                <TextField fx:id="notesInput" prefWidth="200.0" promptText="Enter notes" />
+                <Button mnemonicParsing="false" onAction="#addTask" text="Add" />
+                <Button mnemonicParsing="false" onAction="#removeTask" text="Remove" />
+            </HBox>
+
+            <ScrollPane VBox.vgrow="ALWAYS">
+                <content>
+                    <TableView fx:id="taskTable" prefHeight="383.0" prefWidth="780.0" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="timeColumn" prefWidth="100.0" text="Time" />
+                            <TableColumn fx:id="taskColumn" prefWidth="200.0" text="Task" />
+                            <TableColumn fx:id="categoryColumn" prefWidth="150.0" text="Category" />
+                            <TableColumn fx:id="notesColumn" prefWidth="300.0" text="Notes" />
+                            <TableColumn fx:id="completedColumn" prefWidth="130.0" text="Completed" />
+                            <TableColumn fx:id="editColumn" prefWidth="80.0" text="Edit" />
+                        </columns>
+                    </TableView>
+                </content>
+            </ScrollPane>
+
+            <HBox spacing="10.0">
+                <Label text="Progress for selected date:" />
+                <Text fx:id="progressText" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
+
+
