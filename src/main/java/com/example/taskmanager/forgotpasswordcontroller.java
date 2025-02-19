@@ -1,5 +1,6 @@
 package com.example.taskmanager;
 
+import com.mongodb.MongoException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +12,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import org.bson.Document;
+import java.util.Random;
 
 public class forgotpasswordcontroller {
+    @FXML
+    private Stage forgetpassstage;
     @FXML
     private TextField Username;
     @FXML
@@ -47,22 +51,53 @@ public class forgotpasswordcontroller {
     private AnchorPane anchorpane2;
     @FXML
     private AnchorPane anchorpane3;
+    @FXML
+    private AnchorPane anchorpane4;
 
     private boolean condition1=false;
-    private boolean condition2=false;
+    private final boolean condition2=false;
 
+    mongo m = new mongo();
+    Random r=new Random();
+    Document securityquestions=new Document();
+    Document document=new Document();
+    private final int choice=r.nextInt(2);
     @FXML
     public void initialize(){
         anchorpane2.setVisible(false);
         anchorpane3.setVisible(false);
+        anchorpane4.setVisible(false);
+    }
+    public void setstage(Stage stage){
+        forgetpassstage=stage;
     }
     @FXML
     private void confirmButton(ActionEvent event) throws IOException{
         if(!Username.getText().isEmpty() || !Email.getText().isEmpty()) {
-            condition1 = true;
-            if (condition1 == true) {
-                anchorpane2.setVisible(true);
-                Confirm.setVisible(false);
+            Document query=new Document("username",Username.getText()).append("email",Email.getText());
+            document=m.read("users",query);
+            securityquestions=document.get("Security Questions", Document.class);
+            if(document!=null){
+                try{
+                    anchorpane2.setVisible(true);
+                    Confirm.setVisible(false);
+                    if(choice==0){
+                        question.setText(securityquestions.getString("question1"));
+                    }
+                    else{
+                        question.setText(securityquestions.getString("question2"));
+                    }
+                }
+                catch(MongoException e){
+
+                }
+            }
+            else{
+                Stage stage =new Stage();
+                FXMLLoader fxmlLoader=new FXMLLoader(HelloApplication.class.getResource("Fieldnotmatching.fxml"));
+                Scene scene= new Scene(fxmlLoader.load());
+                stage.setScene(scene);
+                stage.show();
             }
         }
         else{
@@ -75,17 +110,29 @@ public class forgotpasswordcontroller {
     }
     @FXML
     private void submitButton1(ActionEvent event) throws IOException{
+
         if(!answer.getText().isEmpty()){
-             condition2 = true;
-            if (condition2 == true) {
-               anchorpane1.setVisible(false);
-               anchorpane2.setVisible(false);
-               Submit1.setVisible(false);
-               anchorpane3.setVisible(true);
-               newpass1.setVisible(true);
-               newPassword.setVisible(false);
-               confirmpass1.setVisible(true);
-               confirmPassword.setVisible(false);
+            System.out.println(securityquestions.getString("answer"+choice));
+            System.out.println(answer.getText().equals(securityquestions.getString("answer"+(choice+1))));
+            if(answer.getText().equals(securityquestions.getString("answer"+(choice+1)))){
+                condition1=true;
+            }
+            else{
+                Stage stage =new Stage();
+                FXMLLoader fxmlLoader=new FXMLLoader(HelloApplication.class.getResource("Fieldnotmatching.fxml"));
+                Scene scene= new Scene(fxmlLoader.load());
+                stage.setScene(scene);
+                stage.show();
+            }
+            if(condition1=true){
+                anchorpane1.setVisible(false);
+                anchorpane2.setVisible(false);
+                Submit1.setVisible(false);
+                anchorpane3.setVisible(true);
+                newpass1.setVisible(true);
+                newPassword.setVisible(false);
+                confirmpass1.setVisible(true);
+                confirmPassword.setVisible(false);
             }
         }
         else{
@@ -100,11 +147,18 @@ public class forgotpasswordcontroller {
     private void submitButton2(MouseEvent event) throws IOException {
         if(!newpass1.getText().isEmpty() || !confirmpass1.getText().isEmpty()){
             if(newpass1.getText().equals(confirmpass1.getText()) || newPassword.getText().equals(confirmPassword.getText())){
-                         System.out.println("ok");
+                boolean flag=m.update("users",document,"password",newpass1.getText());
+                if(flag){
+                    anchorpane3.setVisible(false);
+                    anchorpane4.setVisible(true);
+                }
+                else{
+                    System.out.print("Error in writing data");
+                }
             }
             else{
                 Stage stage = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("emailnotmatching.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Fieldnotmatching.fxml"));
                 Scene scene = new Scene(fxmlLoader.load());
                 stage.setScene(scene);
                 stage.show();
@@ -121,7 +175,7 @@ public class forgotpasswordcontroller {
     }
     @FXML
     private void show1Button(MouseEvent event){
-        if(newpass1.isVisible()==true && newPassword.isVisible()==false){
+        if(newpass1.isVisible() && !newPassword.isVisible()){
             newpass1.setVisible(false);
             newPassword.setText(String.valueOf(newpass1.getText()));
             newPassword.setVisible(true);
@@ -134,7 +188,7 @@ public class forgotpasswordcontroller {
     }
     @FXML
     private void show2Button(MouseEvent event){
-              if(confirmpass1.isVisible()==true && confirmPassword.isVisible()==false){
+              if(confirmpass1.isVisible() && !confirmPassword.isVisible()){
                   confirmpass1.setVisible(false);
                   confirmPassword.setText(String.valueOf(confirmpass1.getText()));
                   confirmPassword.setVisible(true);
@@ -151,12 +205,23 @@ public class forgotpasswordcontroller {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         LoginController controller = fxmlLoader.getController();
+        controller.setstage(stage);
         stage.setScene(scene);
+        forgetpassstage.close();
         stage.show();
     }
     @FXML
     private void newuser(MouseEvent event) throws IOException{
-        System.out.println("new user");
+        Stage stage =new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("newuser.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        newuserController controller = fxmlLoader.getController();
+        controller.initialize();
+        controller.setstage(stage);
+        forgetpassstage.close();
+        stage.setScene(scene);
+
+        stage.show();
     }
 
 }

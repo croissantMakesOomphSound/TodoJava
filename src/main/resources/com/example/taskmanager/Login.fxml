@@ -4,14 +4,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.image.Image?>
 <AnchorPane prefHeight="418.0" prefWidth="655.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.LoginController">
    <children>
-      <AnchorPane prefHeight="418.0" prefWidth="655.0">
+      <AnchorPane prefHeight="418.0" prefWidth="655.0" style="-fx-background-color: linear-gradient(to bottom right, rgb(0,128,255), white);">
          <children>
-            <AnchorPane prefHeight="418.0" prefWidth="257.0" style="-fx-border-color: black;" />
+            <AnchorPane prefHeight="418.0" prefWidth="257.0" style="-fx-background-image:url('file:/C:/Users/TMpub/IdeaProjects/Taskmanager/src/main/resources/com/example/taskmanager/login.jpeg');" />
             <Label layoutX="413.0" layoutY="76.0" text="LOGIN">
                <font>
                   <Font size="24.0" />
@@ -29,7 +31,7 @@
             </Label>
             <Button layoutX="434.0" layoutY="244.0" mnemonicParsing="false" onAction="#SubmitButton" text="LOGIN" />
             <PasswordField fx:id="Password1" layoutX="372.0" layoutY="203.0" prefHeight="26.0" prefWidth="222.0" />
-            <Button layoutX="605.0" layoutY="206.0" mnemonicParsing="false" text="show" onMouseClicked="#showButton">
+            <Button layoutX="605.0" layoutY="206.0" mnemonicParsing="false" onMouseClicked="#showButton" text="show">
                <font>
                   <Font size="10.0" />
                </font>

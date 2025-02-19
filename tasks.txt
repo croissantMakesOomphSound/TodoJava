@@ -1,10 +1,2 @@
-apple
-buy apples
-to add editpassword
-to add reminder for calender
-to add security questions
-to add error for no input
-to complete date/ list reading capability of reminder
-to do changepassword
-to add undo in all change
-
+2024-06-28,19:00,Buy fruit,Personal,apples ,Yes
+2024-06-28,13:00,apw,Urgent,choose course,Yes

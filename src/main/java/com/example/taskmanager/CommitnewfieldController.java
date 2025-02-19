@@ -5,18 +5,20 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class CommitnewemailController {
-    @FXML
-   private Label newemail;
+public class CommitnewfieldController {
+   @FXML
+   private Label newfield;
+   @FXML
+   private Label newvalue;
    @FXML
    private Stage stage;
    private boolean flag=false;
    public void setstage(Stage stage){
        this.stage=stage;
    }
-   public void getemail(String email) throws NullPointerException{
-       System.out.println(email);
-       newemail.setText(email);
+   public void getfield(String field,String value) throws NullPointerException{
+       newfield.setText(field+" to :");
+       newvalue.setText(value);
    }
    public boolean check(){
        return flag;

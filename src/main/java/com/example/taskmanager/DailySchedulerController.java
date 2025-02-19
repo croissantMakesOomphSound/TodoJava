@@ -1,22 +1,29 @@
-package com.example.calender;
+package com.example.taskmanager;
 
-import javafx.beans.property.*;
+import com.mongodb.MongoException;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.bson.Document;
 
 import java.io.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DailySchedulerController implements Initializable {
@@ -41,6 +48,8 @@ public class DailySchedulerController implements Initializable {
 
     @FXML
     private TableColumn<Task, Void> editColumn;
+    @FXML
+    private TableColumn<Task, String> linkColumn;
 
     @FXML
     private DatePicker datePicker;
@@ -53,6 +62,8 @@ public class DailySchedulerController implements Initializable {
 
     @FXML
     private TextField notesInput;
+    @FXML
+    private TextField linkInput;
 
     @FXML
     private Text currentDateText;
@@ -66,6 +77,64 @@ public class DailySchedulerController implements Initializable {
     private static volatile DailySchedulerController instance;
 
     private ObservableList<Task> tasks = FXCollections.observableArrayList();
+
+    private LocalDate dateFocus;
+
+    private Stage DailySchedulerStage;
+    private Document document;
+    mongo m=new mongo();
+
+    @FXML
+    public void setstage(Stage stage){
+        DailySchedulerStage=stage;
+    }
+    public void setDocument(Document document){
+        this.document=document;
+        System.out.println("\n\n\n\n\n\ndocument is set\n\n\n"+document+"\n\n\n\n");
+    }
+    @FXML
+    private void HomeButton(MouseEvent event) throws IOException {
+        System.out.println("homebutton");
+        Stage stage=new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Taskmanager.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        HelloController controller = fxmlLoader.getController();
+        controller.setDocument(document);
+        controller.initialize();
+        controller.setstage(stage);
+        stage.setScene(scene);
+        DailySchedulerStage.close();
+        stage.show();
+    }
+
+    @FXML
+    private void viewreminder(MouseEvent event) throws IOException{
+        Stage stage= new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("viewreminder.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        viewreminderController  controller = fxmlLoader.getController();
+        controller.setstage(stage);
+        controller.setDocument(document);
+        controller.initialize();
+        stage.setScene(scene);
+        DailySchedulerStage.close();
+        stage.show();
+
+    }
+
+    @FXML
+    private void backoneday(MouseEvent event){
+        dateFocus=dateFocus.minusDays(1);
+        datePicker.setValue(dateFocus);
+        showTasksForSelectedDate();
+    }
+
+    @FXML
+    private void forwardoneday(MouseEvent event){
+        dateFocus=dateFocus.plusDays(1);
+        datePicker.setValue(dateFocus);
+        showTasksForSelectedDate();
+    }
 
     public static DailySchedulerController getInstance() {
         if (instance == null) {
@@ -97,6 +166,7 @@ public class DailySchedulerController implements Initializable {
                     task.setCompleted(choiceBox.getValue());
                     updateItem(task.getCompleted(), isEmpty());
                     saveData(); // Save data when completed state changes
+                    updateProgress();
                 });
             }
 
@@ -111,6 +181,7 @@ public class DailySchedulerController implements Initializable {
                 }
             }
         });
+        linkColumn.setCellValueFactory(new  PropertyValueFactory<>("link"));
 
         // Initialize edit column with button
         editColumn.setCellFactory(param -> new TableCell<>() {
@@ -143,44 +214,69 @@ public class DailySchedulerController implements Initializable {
         // Listener to update tasks when the date picker value changes
         datePicker.setOnAction(event -> showTasksForSelectedDate());
 
-        // Show tasks for the selected date in the date picker
-        showTasksForSelectedDate();
 
         // Calculate and display progress for the selected date
         updateProgress();
+
+
+    }
+    @FXML
+    private void file(MouseEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        File selectedFile = fileChooser.showOpenDialog(DailySchedulerStage);
+        if (selectedFile != null) {
+            linkInput.setText(selectedFile.getAbsolutePath());
+            System.out.println("Selected File: " + selectedFile.getAbsolutePath());
+        } else {
+            System.out.println("No file selected");
+        }
+    }
+    @FXML
+    private void recommend(MouseEvent event){
+        Task task = taskTable.getSelectionModel().getSelectedItem();
+       String selection=task.getTask();
+        String link=task.getLink();
+        RecommendationClass recommendationClass=new RecommendationClass();
+        recommendationClass.initialize();
+        recommendationClass.recommendationfortodo(selection,link);
+
     }
 
     @FXML
-    private void showTasksForSelectedDate() {
+    private void showTasksForSelectedDate() throws NullPointerException {
         LocalDate selectedDate = datePicker.getValue();
         currentDateText.setText("Current Date: " + selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         tasks.clear();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader("tasks.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 6) {
-                    try {
-                        LocalDate taskDate = LocalDate.parse(parts[0]);
-                        if (taskDate.equals(selectedDate)) {
-                            tasks.add(new Task(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5])); // Use parts[5] directly for completed
-                        }
-                    } catch (DateTimeParseException e) {
-                        System.err.println("Error parsing date: " + parts[0] + ". Skipping this line.");
-                        continue;
-                    }
-                } else {
-                    System.err.println("Invalid line format in tasks.txt: " + line);
+        Document search=new Document("User_id",document.get("_id"))
+                        .append("username",document.get("username"))
+                        .append("date",selectedDate);
+        Document check=m.read("calender",search);
+        if(check!=null){
+            try{
+                List<Document> existingtasks = (List<Document>) check.get("tasks");
+                ArrayList<Document> olddocument_tasks_ArrayList =new ArrayList<>(existingtasks);
+                for(Document i:olddocument_tasks_ArrayList){
+                    tasks.add(new Task(selectedDate.toString()
+                            ,i.get("time").toString()
+                            ,i.get("task").toString()
+                            ,i.get("category").toString()
+                            ,i.get("notes").toString()
+                            ,i.get("completed").toString()
+                            ,i.get("link").toString()
+                    ));
                 }
             }
-            taskTable.setItems(tasks);
-        } catch (IOException e) {
-            e.printStackTrace();
+            catch (MongoException e){
+                e.printStackTrace();
+            }
+        }
+        else{
+
         }
 
-        // Update progress for the selected date
         updateProgress();
     }
 
@@ -191,12 +287,12 @@ public class DailySchedulerController implements Initializable {
         String category = categoryChoiceBox.getValue();
         String notes = notesInput.getText();
         LocalDate selectedDate = datePicker.getValue();
+        String newlink=linkInput.getText();
 
         if (!time.isEmpty() && !task.isEmpty() && selectedDate != null && category != null) {
-            Task newTask = new Task(selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), time, task, category, notes, "No");
+            Task newTask = new Task(selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), time, task, category, notes, "No",newlink);
             tasks.add(newTask);
             saveData();
-            clearInputs();
 
             // Update progress for the selected date
             updateProgress();
@@ -208,54 +304,112 @@ public class DailySchedulerController implements Initializable {
         Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
         if (selectedTask != null) {
             tasks.remove(selectedTask);
-            saveData();
-
+            saveupdateData();
             // Update progress for the selected date
             updateProgress();
         }
     }
 
     public void saveData() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("tasks.txt"))) {
-            for (Task task : tasks) {
-                writer.write(task.getDate() + "," + task.getTime() + "," + task.getTask() + "," + task.getCategory() + "," + task.getNotes() + "," + task.getCompleted());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        ArrayList<Document> newdocument_tasks_ArrayList = new ArrayList<Document>();
+
+        Document calender = new Document("User_id", document.get("_id"))
+                .append("username", document.get("username"))
+                .append("date", datePicker.getValue());
+
+        System.out.println("Created calendar document: " + calender);
+
+        Document result = m.read("calender", calender);
+        System.out.println("Read result: " + result);
+
+        for (Task task : tasks) {
+            Document document_tasks = new Document("time", task.getTime())
+                    .append("task", task.getTask())
+                    .append("notes", task.getNotes())
+                    .append("category", task.getCategory())
+                    .append("completed", task.getCompleted())
+                    .append("link",task.getLink());
+
+            newdocument_tasks_ArrayList.add(document_tasks);
+
         }
-        System.out.println("Saved data to file.");
+        System.out.println("\n\n\n"+newdocument_tasks_ArrayList+"\n\n\n\n\n");
+
+        System.out.println("Final calendar document with tasks: " + calender);
+
+        if (result == null) {
+            calender.append("tasks", newdocument_tasks_ArrayList);
+            m.create("calender", calender);
+            System.out.println("Document created: " + calender);
+        } else {
+            m.update("calender", calender, "tasks", newdocument_tasks_ArrayList);
+            System.out.println("Document updated: " + calender);
+        }
+    }
+
+
+    public void saveupdateData() {
+        ArrayList<Document> newdocument_tasks_ArrayList = new ArrayList<Document>();
+        Document calender = new Document("User_id", document.get("_id"))
+                .append("username", document.get("username"))
+                .append("date", datePicker.getValue());
+
+        Document result = m.read("calender", calender);
+        m.deleteOne("calender", calender);
+
+        for (Task task : tasks) {
+            Document document_tasks=new Document("time",task.getTime())
+                    .append("task",task.getTask())
+                    .append("notes",task.getNotes())
+                    .append("category",task.getCategory())
+                    .append("completed",task.getCompleted())
+                    .append("link",task.getLink());
+
+            newdocument_tasks_ArrayList.add(document_tasks);
+
+        }
+        m.update("calender", calender,"tasks",newdocument_tasks_ArrayList);
     }
 
     public void setDateFocus(LocalDate dateFocus) {
+        this.dateFocus=dateFocus;
         datePicker.setValue(dateFocus);
         showTasksForSelectedDate();
     }
 
     public void loadTasksForDate(LocalDate date) {
-        tasks.clear();
+               tasks.clear();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("tasks.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 6) {
-                    try {
-                        LocalDate taskDate = LocalDate.parse(parts[0]);
-                        if (taskDate.equals(date)) {
-                            tasks.add(new Task(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5])); // Use parts[5] directly for completed
-                        }
-                    } catch (DateTimeParseException e) {
-                        System.err.println("Error parsing date: " + parts[0] + ". Skipping this line.");
-                        continue;
-                    }
-                } else {
-                    System.err.println("Invalid line format in tasks.txt: " + line);
+
+        Document search=new Document("User_id",document.get("_id"))
+                .append("username",document.get("username"))
+                .append("date",date);
+        Document check=m.read("calender",search);
+
+        if(check!=null && date!=null){
+            try{
+                List<Document> existingtasks = (List<Document>) check.get("tasks");
+                ArrayList<Document> olddocument_tasks_ArrayList =new ArrayList<>(existingtasks);
+                System.out.println(check);
+                System.out.println(olddocument_tasks_ArrayList);
+
+                for(Document i:olddocument_tasks_ArrayList){
+                    tasks.add(new Task(date.toString()
+                            ,i.get("time").toString()
+                            ,i.get("task").toString()
+                            ,i.get("category").toString()
+                            ,i.get("notes").toString()
+                            ,i.get("completed").toString()
+                            ,i.get("link").toString()
+                    ));
                 }
             }
-            System.out.println("Loaded tasks for date " + date + ": " + tasks.size());
-        } catch (IOException e) {
-            e.printStackTrace();
+            catch (MongoException e){
+                e.printStackTrace();
+            }
+        }
+        else{
+
         }
 
         taskTable.setItems(tasks);
@@ -268,6 +422,7 @@ public class DailySchedulerController implements Initializable {
         taskInput.clear();
         categoryChoiceBox.setValue(null);
         notesInput.clear();
+        linkInput.clear();
     }
 
     private void editTask(Task task) {
@@ -275,8 +430,10 @@ public class DailySchedulerController implements Initializable {
         taskInput.setText(task.getTask());
         categoryChoiceBox.setValue(task.getCategory());
         notesInput.setText(task.getNotes());
+        linkInput.setText(task.getLink());
 
         tasks.remove(task); // Remove the existing task to allow for editing
+        saveupdateData();;
 
         updateProgress(); // Update progress as task count may change
     }
@@ -294,22 +451,23 @@ public class DailySchedulerController implements Initializable {
         progressText.setText(String.format("Progress: %.2f%%", progressPercentage));
     }
 
-
     public static class Task {
         private final StringProperty date;
         private final StringProperty time;
         private final StringProperty task;
         private final StringProperty category;
         private final StringProperty notes;
-        private final StringProperty completed; // Changed to StringProperty
+        private final StringProperty completed;
+        private final StringProperty link;
 
-        public Task(String date, String time, String task, String category, String notes, String completed) {
+        public Task(String date, String time, String task, String category, String notes, String completed,String link) {
             this.date = new SimpleStringProperty(date);
             this.time = new SimpleStringProperty(time);
             this.task = new SimpleStringProperty(task);
             this.category = new SimpleStringProperty(category);
             this.notes = new SimpleStringProperty(notes);
-            this.completed = new SimpleStringProperty(completed); // Initialize completed as StringProperty
+            this.completed = new SimpleStringProperty(completed);
+            this.link=new SimpleStringProperty(link);
         }
 
         public String getDate() {
@@ -382,6 +540,9 @@ public class DailySchedulerController implements Initializable {
 
         public void setCompleted(String completed) {
             this.completed.set(completed);
+        }
+        public String getLink(){
+            return link.get();
         }
     }
 }

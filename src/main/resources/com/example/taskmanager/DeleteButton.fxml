@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="140.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.DeleteButtonController">
+<AnchorPane prefHeight="140.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"  style="-fx-background-color: linear-gradient(to bottom right, rgb(1,255,255), white);" fx:controller="com.example.taskmanager.DeleteButtonController">
     <children>
         <ChoiceBox fx:id="choicebox" layoutX="14.0" layoutY="57.0" prefHeight="26.0" prefWidth="362.0" />
         <Label layoutX="18.0" layoutY="20.0" prefHeight="18.0" prefWidth="262.0" text="Select one that you want to delete" />

@@ -1,58 +1,133 @@
 package com.example.taskmanager;
 
-import com.mongodb.MongoClientSettings;
 import com.mongodb.ConnectionString;
+import com.mongodb.MongoException;
+import com.mongodb.MongoWriteException;
+import com.mongodb.client.*;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
+import jdk.jfr.StackTrace;
+import org.bson.BsonArray;
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class mongo {
-    public static void main(String[] args) {
-        // Connect to the MongoDB server
-        try (MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://localhost:27017"))) {
-            // Access the database
-            MongoDatabase database = mongoClient.getDatabase("taskmanager");
+        MongoClient mongoClient = MongoClients.create(new ConnectionString("mongodb://localhost:27017"));
+        MongoDatabase database = mongoClient.getDatabase("taskmanager");
 
-            // Access the collection
-            MongoCollection<Document> collection = database.getCollection("users");
-
-            // Insert a document
-            Document document = new Document("name", "Admin")
-                    .append("username", "admin")
-                    .append("email", "tamoghnamu@gmail.com")
-                    .append("password", "1234");
-            collection.insertOne(document);
-            System.out.println("Document inserted successfully.");
-
-            // Read documents
-            Document query = new Document("name", "Admin");
-            Document result = collection.find(query).first();
-            if (result != null) {
-                System.out.println("Found document: " + result.toJson());
-            } else {
-                System.out.println("Document not found.");
+        public boolean create(String collection1,Document document){
+            try {
+                MongoCollection<Document> collection = database.getCollection(collection1);
+                collection.insertOne(document);
+                System.out.println("!!!!!!!!!!!!!!!!!Successfully printed!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                return true;
             }
 
-            // Update a document
-            collection.updateOne(Filters.eq("name", "Admin"), new Document("$set", new Document("password", "123")));
-            System.out.println("Document updated successfully.");
+            catch(MongoWriteException e){
+                System.out.println("!!!!!!!!!!!!!!!!Failed!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                e.printStackTrace();
 
-            // Read documents after update
-            result = collection.find(query).first();
-            if (result != null) {
-                System.out.println("Updated document: " + result.toJson());
-            } else {
-                System.out.println("Document not found after update.");
+                return false;
             }
+            catch(MongoException e){
+                System.out.println("!!!!!!!!!!!!!!!!!Failed2!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-            // Delete a document
-            collection.deleteOne(query);
-            System.out.println("Document deleted successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
+                return false;
+            }
+        }
+
+        public Document read(String collection1, Document query){
+        MongoCollection<Document> collection = database.getCollection(collection1);
+        Document result = collection.find(query).first();
+
+        if (result != null) {
+            System.out.println("Found document: " + result.toJson());
+            return result;
+        } else {
+            System.out.println("Document not found.");
+            return null;
         }
     }
+
+    public List<Document> readALL(String collection1, Document query){
+        MongoCollection<Document> collection = database.getCollection(collection1);
+        List<Document> result=new ArrayList<>();
+       for(Document document :collection.find(query)) {
+           result.add(document);
+       }
+
+        if (result.isEmpty()) {
+            return result;
+        } else {
+            return result;
+        }
+    }
+
+      public boolean update(String collection1,Document document,String field,String value){
+         try{ MongoCollection<Document> collection = database.getCollection(collection1);
+          Document update = new Document("$set", new Document(field,value));
+          collection.updateOne(document, update);
+         return true;
+         }
+         catch (MongoException e){
+             return false;
+         }
+
+      }
+    public boolean update(String collection1,Document olddocument,Document newdocument){
+        try{ MongoCollection<Document> collection = database.getCollection(collection1);
+            collection.deleteOne(olddocument);
+            collection.insertOne(newdocument);
+            return true;
+        }
+        catch (MongoException e){
+            return false;
+        }
+
+    }
+    public boolean update(String collection1,Document document,String field,ArrayList<Document> value){
+        try{ MongoCollection<Document> collection = database.getCollection(collection1);
+            Document update = new Document("$set", new Document(field,value));
+            collection.updateOne(document, update);
+            return true;
+        }
+        catch (MongoException e){
+            return false;
+        }
+
+    }
+    public boolean update(String collection1,Document document,String field,Document value){
+        try{ MongoCollection<Document> collection = database.getCollection(collection1);
+            Document update = new Document("$set", new Document(field,value));
+            collection.updateOne(document, update);
+            return true;
+        }
+        catch (MongoException e){
+            return false;
+        }
+
+    }
+    public void deleteOne(String collection1,Document searchCriteria) {
+        MongoCollection<Document> collection = database.getCollection(collection1);
+        DeleteResult result = collection.deleteOne(searchCriteria);
+        System.out.println("Deleted document count: " + result.getDeletedCount());
+    }
+
+
+    /*////////////////////////////////////////////////////////////////
+    //////////////////////////////Calender///////////////////////////
+    //////////////////////////////////////////////////////////////*/
+
+
+
+
 }

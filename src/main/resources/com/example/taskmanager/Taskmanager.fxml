@@ -1,42 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="418.0" prefWidth="655.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.HelloController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="418.0" prefWidth="696.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.HelloController">
     <children>
-        <AnchorPane layoutY="-5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="427.0" prefWidth="662.0">
+        <AnchorPane layoutY="-4.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="418.0" prefWidth="694.0" style="-fx-background-color: linear-gradient(to bottom right, rgb(1,255,255), white);">
             <children>
-                <AnchorPane prefHeight="427.0" prefWidth="134.0" style="-fx-border-color: black; -fx-background-color: linear-gradient(to bottom right, rgb(0,128,255), white);">
+                <AnchorPane layoutX="4.0" layoutY="11.0" prefHeight="404.0" prefWidth="119.0" style="-fx-background-color: #333399; -fx-border-color: #333399;-fx-border-radius: 25; -fx-background-radius: 25;">
                <children>
                   <ImageView fitHeight="116.0" fitWidth="107.0" layoutX="16.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-color: black;" />
-                  <Label layoutX="7.0" layoutY="165.0" prefHeight="19.0" prefWidth="117.0" text="view profile" textFill="#1b08ec" onMouseClicked="#viewprofile"/>
-                  <Label layoutX="7.0" layoutY="184.0" text="view reminder" textFill="#1b08ec" onMouseClicked="#viewreminder" />
-               </children></AnchorPane>
-                <AnchorPane layoutX="134.0" layoutY="6.0" prefHeight="418.0" prefWidth="200.0" style="-fx-border-color: black;">
+                  <Label layoutX="7.0" layoutY="165.0" onMouseClicked="#viewprofile" prefHeight="19.0" prefWidth="117.0" text="view profile" textFill="WHITE" />
+                  <Label layoutX="7.0" layoutY="184.0" onMouseClicked="#viewreminder" text="view reminder" textFill="WHITE" />
+               </children>
+                </AnchorPane>
+                <AnchorPane layoutX="136.0" layoutY="17.0" prefHeight="390.0" prefWidth="202.0" style="-fx-border-radius: 25; -fx-background-color: #007aa5; -fx-background-radius: 25;">
                     <children>
-                        <Button layoutX="166.0" layoutY="378.0" mnemonicParsing="false" onAction="#AddButton" style="-fx-background-radius: 50px;" text="+" />
-                        <ListView fx:id="listView" editable="true" layoutX="4.0" layoutY="26.0" prefHeight="338.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom right, rgb(1,255,255), white);-fx-border-color: black;" />
-                        <Label alignment="CENTER" layoutX="32.0" layoutY="6.0" prefHeight="18.0" prefWidth="126.0" text="To-do List" textAlignment="RIGHT" />
-                  <Button layoutX="16.0" layoutY="4.0" mnemonicParsing="false" onAction="#EditButton" prefHeight="11.0" prefWidth="30.0" text="edit">
+                        <Button layoutX="136.0" layoutY="359.0" mnemonicParsing="false" onAction="#AddButton" style="-fx-background-radius: 50px;" text="+" />
+                        <Label alignment="CENTER" layoutX="51.0" layoutY="14.0" prefHeight="18.0" prefWidth="58.0" text="To-do List" textAlignment="RIGHT" textFill="WHITE" />
+                  <Button layoutX="7.0" layoutY="12.0" mnemonicParsing="false" onAction="#EditButton" prefHeight="11.0" prefWidth="30.0" text="edit">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button layoutX="143.0" layoutY="3.0" mnemonicParsing="false" onAction="#DeleteButton" prefHeight="22.0" prefWidth="46.0" text="Delete">
+                  <Button layoutX="158.0" layoutY="11.0" mnemonicParsing="false" onAction="#DeleteButton" prefHeight="6.0" prefWidth="16.0" style="-fx-background-radius: 50px;">
+                      <graphic>
+                          <FontAwesomeIconView glyphName="TRASH_ALT" size="16" styleClass="fas" />
+                      </graphic>
+                  </Button>
+                  <Button layoutX="117.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#recommend" prefHeight="22.0" prefWidth="30.0" text="rec.">
                      <font>
                         <Font size="10.0" />
                      </font>
-
                   </Button>
+                  <ScrollPane layoutX="9.0" layoutY="40.0" prefHeight="315.0" prefWidth="191.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="594.0" prefWidth="380.0" style="-fx-background-color: linear-gradient(to bottom right, rgb(1,255,255), white);">
+                           <children>
+                               <Label style="-fx-background-color:#ffffff" text="activity-link" layoutY="0.0" prefHeight="10" prefWidth="380.0"/>
+                               <ListView fx:id="listView" editable="true" layoutY="19.0" prefHeight="594.0" prefWidth="380.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
                     </children>
                 </AnchorPane>
-            <AnchorPane layoutX="340.0" layoutY="6.0" prefHeight="418.0" prefWidth="315.0" style="-fx-border-color: black;" />
-            </children>
-        </AnchorPane>
+            <AnchorPane layoutX="347.0" layoutY="16.0" prefHeight="394.0" prefWidth="334.0" style="-fx-border-radius: 25; -fx-background-color: #007aa5; -fx-background-radius: 25;">
+                <FlowPane fx:id="calendar" hgap="10.0" layoutX="13.0" layoutY="92.0" prefHeight="301.0" prefWidth="326.0" vgap="5.0" />
+                <HBox alignment="CENTER" layoutX="63.0" layoutY="22.0" prefHeight="30.0" prefWidth="272.0" spacing="5.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#backOneMonth" prefHeight="26.0" prefWidth="27.0" text="&lt;" />
+                        <Text fx:id="year" strokeType="OUTSIDE" strokeWidth="0.0" text="####">
+                            <font>
+                                <Font size="22.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="month" strokeType="OUTSIDE" strokeWidth="0.0" text="####">
+                            <font>
+                                <Font size="22.0" />
+                            </font>
+                        </Text>
+                        <Button mnemonicParsing="false" onAction="#forwardOneMonth" text="&gt;" />
+                    </children>
+                </HBox>
+                <VBox layoutX="34.0" layoutY="23.0">
+                    <children>
+                        <VBox />
+                    </children>
+                </VBox>
+                <HBox alignment="CENTER" layoutX="23.0" layoutY="58.0" prefHeight="44.0" prefWidth="239.0" spacing="25.0">
+                    <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sun" textAlignment="CENTER" />
+                        <Text layoutX="213.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mon" textAlignment="CENTER" />
+                        <Text layoutX="222.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tues" textAlignment="CENTER" />
+                        <Text layoutX="232.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wed" textAlignment="CENTER" />
+                        <Text layoutX="241.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thur" textAlignment="CENTER" />
+                        <Text layoutX="251.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Fri" textAlignment="CENTER" />
+                        <Text layoutX="266.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sat" textAlignment="CENTER" />
+                    </children>
+                    <padding>
+                        <Insets right="9.0" />
+                    </padding>
+                </HBox>
+                    <Button fx:id="goToNewPageButton" layoutX="7.0" layoutY="25.0" mnemonicParsing="false" onAction="#goToNewPage" text="Daily" />
+            </AnchorPane>
+    </children>
+     </AnchorPane>
     </children>
 </AnchorPane>

@@ -1,15 +1,21 @@
 package com.example.taskmanager;
 
+import com.mongodb.MongoException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import org.bson.Document;
+
+
 
 public class LoginController {
     @FXML
@@ -26,39 +32,50 @@ public class LoginController {
     private String UserName;
     private String password;
     private boolean condition1=false;
-
+    mongo m = new mongo();
+    Document document=new Document();
     @FXML
     public void setstage(Stage stage){
         primarystage=stage;
     }
 
     @FXML
-    private void SubmitButton(ActionEvent event){
-        UserName =Username.getText();
-        if(Password1.isVisible()==true) {
+    private void SubmitButton(ActionEvent event)throws IOException {
+        UserName = Username.getText();
+        if (Password1.isVisible()) {
             password = Password1.getText();
-        }
-        else {
+        } else {
             password = Password.getText();
         }
-        System.out.println(UserName);
-        System.out.println(password);
-        condition1=true;
-        if(condition1==true) {
-           try {
-               starttaskmanager();
-           }
-           catch(IOException error){
+        Username.toString().trim();
+        password.trim();
+        Document query = new Document("username", UserName).append("password", password);
+        document=m.read("users", query);
+        if (document!= null) {
+            try {
+                starttaskmanager();
+            }catch (IOException error) {
 
-           }
+            }catch (MongoException e) {
+
+            }
         }
-    }
+        else{
+            Stage stage =new Stage();
+            FXMLLoader fxmlLoader=new FXMLLoader(HelloApplication.class.getResource("Fieldnotmatching.fxml"));
+            Scene scene= new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            stage.show();
+        }
+        }
     @FXML
     private void starttaskmanager() throws IOException {
             Stage stage =new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Taskmanager.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             HelloController controller = fxmlLoader.getController();
+            controller.setDocument(document);
+            controller.setstage(stage);
             controller.initialize();
             primarystage.close();
             controller.setstage(stage);
@@ -72,6 +89,7 @@ public class LoginController {
         Scene scene = new Scene(fxmlLoader.load());
         forgotpasswordcontroller controller = fxmlLoader.getController();
         controller.initialize();
+        controller.setstage(stage);
         primarystage.close();
         stage.setScene(scene);
         stage.show();
@@ -83,6 +101,7 @@ public class LoginController {
         Scene scene = new Scene(fxmlLoader.load());
         newuserController controller = fxmlLoader.getController();
         controller.initialize();
+        controller.setstage(stage);
         primarystage.close();
         stage.setScene(scene);
 

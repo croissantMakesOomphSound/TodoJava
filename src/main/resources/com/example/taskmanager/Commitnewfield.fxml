@@ -4,12 +4,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="125.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.CommitnewemailController">
+<AnchorPane prefHeight="125.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" style="-fx-background-color: linear-gradient(to bottom right, rgb(1,255,255), white);" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.CommitnewfieldController">
    <children>
-      <Button layoutX="276.0" layoutY="86.0" mnemonicParsing="false" text="Yes" onMouseClicked="#YesButton"/>
-      <Button layoutX="325.0" layoutY="86.0" mnemonicParsing="false" text="Cancel" onMouseClicked="#CancelButton" />
-      <Label layoutX="14.0" layoutY="35.0" prefHeight="18.0" prefWidth="378.0" text="Are you sure you want to change email to" />
-      <Label fx:id="newemail" layoutX="14.0" layoutY="54.0" prefHeight="18.0" prefWidth="288.0" text="" />
+      <Button layoutX="276.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#YesButton" text="Yes" />
+      <Button layoutX="325.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#CancelButton" text="Cancel" />
+      <Label layoutX="14.0" layoutY="35.0" prefHeight="18.0" prefWidth="179.0" text="Are you sure you want to change" />
+      <Label fx:id="newfield" layoutX="193.0" layoutY="35.0" prefHeight="18.0" prefWidth="79.0" />
+      <Label fx:id="newvalue" layoutX="14.0" layoutY="53.0" prefHeight="18.0" prefWidth="249.0" style="-fx-border-color: black;" text="" />
+      <Label layoutX="269.0" layoutY="54.0" text="?" />
    </children>
 </AnchorPane>

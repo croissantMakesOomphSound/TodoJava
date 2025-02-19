@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.bson.Document;
 
 import java.io.IOException;
 
@@ -19,13 +20,23 @@ public class ChangeEmailController {
     private TextField newemail;
     @FXML
     private TextField confirmemail;
+    @FXML
+    private Label display;
+    mongo m=new mongo();
+    Document document=new Document();
+    private String oldemail;
 
     public void setstage(Stage stage){
         ChangeUserstage=stage;
     }
+    public void setDocument(Document document1){
+        document=document1;
+    }
+    @FXML
     public void initialize(){
-                newemail.setText("");
-                confirmemail.setText("");
+        existingemail.setText(document.getString("email"));
+        System.out.println(existingemail.getText());
+        oldemail=existingemail.getText();
     }
 
     @FXML
@@ -34,6 +45,7 @@ public class ChangeEmailController {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Taskmanager.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         HelloController controller = fxmlLoader.getController();
+        controller.setDocument(document);
         controller.initialize();
         controller.setstage(stage);
         stage.setScene(scene);
@@ -46,13 +58,28 @@ public class ChangeEmailController {
         String cemail=confirmemail.getText();
         if (!nemail.isEmpty() && nemail.equals(cemail) ) {
             Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Commitnewemail.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Commitnewfield.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            CommitnewemailController controller = fxmlLoader.getController();
+            CommitnewfieldController controller = fxmlLoader.getController();
             controller.setstage(stage);
-            controller.getemail(nemail);
+            controller.getfield("email",nemail);
             stage.setScene(scene);
             stage.showAndWait();
+            if (controller.check()) {
+                System.out.println("flag:true");
+                if(m.update("users", document, "email", newemail.getText())){
+                    display.setText("email is changed to:"+newemail.getText());
+                    existingemail.setText(newemail.getText());
+                    document.put("email",newemail.getText());
+                }
+                else{
+                    display.setText("email change is failed");
+                }
+            }
+            else {
+                System.out.println("flag:false");
+            }
+
         }
         else if (nemail==null || nemail.isEmpty()) {
             Stage stage = new Stage();
@@ -63,7 +90,7 @@ public class ChangeEmailController {
         }
         else{
             Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("emailnotmatching.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("Fieldnotmatching.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             stage.show();
@@ -71,7 +98,14 @@ public class ChangeEmailController {
     }
     @FXML
     private void UndoButton(MouseEvent event){
-        String existingemail1=this.existingemail.getText();
+        if(m.update("users", document, "email", oldemail)){
+            display.setText("email is changed to:"+oldemail);
+            existingemail.setText(oldemail);
+            document.put("email",oldemail);
+        }
+        else{
+            display.setText("email change is failed");
+        }
 
     }
     @FXML
@@ -80,6 +114,7 @@ public class ChangeEmailController {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("viewprofile.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         viewprofileController controller = fxmlLoader.getController();
+        controller.setDocument(document);
         controller.initialize();
         controller.setstage(stage);
         stage.setScene(scene);

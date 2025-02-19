@@ -4,53 +4,72 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="418.0" prefWidth="655.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.setreminderController">
-    <AnchorPane prefHeight="427.0" prefWidth="134.0" style="-fx-border-color: black; -fx-background-color: linear-gradient(to bottom right, rgb(0,128,255), white);">
-        <children>
-            <Label layoutX="14.0" layoutY="141.0" onMouseClicked="#HomeButton" text="Home" />
-            <Label layoutX="14.0" layoutY="168.0" onMouseClicked="#viewprofile" text="view profile" />
+<AnchorPane prefHeight="418.0" prefWidth="655.0" style="-fx-background-color: linear-gradient(to bottom right, rgb(0,128,255), white);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.setreminderController">
+        <AnchorPane layoutX="4.0" layoutY="11.0" prefHeight="404.0" prefWidth="119.0" style="-fx-background-color: #333399; -fx-border-color: #333399;-fx-border-radius: 25; -fx-background-radius: 25;"> <children>
+            <Label layoutX="14.0" layoutY="140.0" onMouseClicked="#HomeButton" text="Home" textFill="WHITE" />
+            <Label layoutX="14.0" layoutY="170.0" onMouseClicked="#viewprofile" text="view profile" textFill="WHITE" />
+            <Label layoutX="14.0" layoutY="185.0" onMouseClicked="#viewreminder" text="view reminder" textFill="WHITE" />
         </children>
     </AnchorPane>
    <AnchorPane layoutX="134.0" prefHeight="427.0" prefWidth="522.0">
       <children>
               <AnchorPane layoutX="8.0" layoutY="48.0" prefHeight="361.0" prefWidth="489.0">
-         <TabPane layoutX="2.0" layoutY="6.0" prefHeight="361.0" prefWidth="489.0" style="-fx-border-color: black;" tabClosingPolicy="UNAVAILABLE">
+         <TabPane layoutX="2.0" layoutY="6.0" prefHeight="361.0" prefWidth="489.0" tabClosingPolicy="UNAVAILABLE">
            <tabs>
              <Tab text="To-do List">
                <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="317.0" prefWidth="450.0">
+                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="317.0" prefWidth="450.0" style="-fx-border-color: rgb(0,128,255);">
                         <children>
                            <Label layoutX="38.0" layoutY="27.0" text="Select activity to be reminded:" />
-                           <ChoiceBox layoutX="38.0" layoutY="51.0" prefHeight="26.0" prefWidth="333.0" />
-                           <Label layoutX="40.0" layoutY="109.0" text="Set time for notifications" />
-                           <ChoiceBox layoutX="38.0" layoutY="141.0" prefHeight="26.0" prefWidth="22.0" />
-                           <ChoiceBox layoutX="88.0" layoutY="141.0" prefHeight="26.0" prefWidth="33.0" />
-                           <ChoiceBox layoutX="144.0" layoutY="141.0" prefHeight="26.0" prefWidth="33.0" />
-                           <Label layoutX="76.0" layoutY="145.0" text=":" />
-                           <Label layoutX="133.0" layoutY="146.0" text=":" />
-                           <Label layoutX="186.0" layoutY="145.0" text=":" />
-                           <DatePicker layoutX="198.0" layoutY="141.0" />
-                           <RadioButton layoutX="36.0" layoutY="194.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="134.0" text="Notification" />
-                           <Button layoutX="372.0" layoutY="263.0" mnemonicParsing="false" text="Submit" />
-                           <Label layoutX="26.0" layoutY="280.0" prefHeight="18.0" prefWidth="158.0" text="Message" />
+                           <ChoiceBox fx:id="setactivity" layoutX="38.0" layoutY="51.0" prefHeight="26.0" prefWidth="333.0" />
+                           <Label layoutX="39.0" layoutY="139.0" text="Set time for notifications" />
+                           <TextField fx:id="Hours" layoutX="71.0" layoutY="163.0" prefHeight="26.0" prefWidth="33.0" />
+                           <TextField fx:id="minutes" layoutX="128.0" layoutY="163.0" prefHeight="26.0" prefWidth="33.0" />
+                           <Label layoutX="116.0" layoutY="167.0" text=":" />
+                           <Label layoutX="168.0" layoutY="167.0" text=":" />
+                           <DatePicker fx:id="date" layoutX="184.0" layoutY="163.0" />
+                           <Button layoutX="372.0" layoutY="263.0" mnemonicParsing="false" onMouseClicked="#SubmitButtontodo" text="Submit" />
+                           <Label fx:id="message" layoutX="26.0" layoutY="280.0" prefHeight="18.0" prefWidth="158.0" />
+                              <Label layoutX="39.0" layoutY="89.0" text="Set Message:" />
+                              <TextField fx:id="usermessage" layoutX="39.0" layoutY="107.0" prefHeight="26.0" prefWidth="337.0" />
                         </children>
                      </AnchorPane>
                </content>
              </Tab>
              <Tab text="Calender">
                <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
+                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="317.0" prefWidth="450.0" style="-fx-border-color: rgb(0,128,255);">
+                 <children>
+                 <Label layoutX="38.0" layoutY="27.0" text="Select activity to be reminded:" />
+                 <ChoiceBox fx:id="setcalactivity" layoutX="38.0" layoutY="51.0" prefHeight="26.0" prefWidth="333.0" />
+                 <Label layoutX="39.0" layoutY="139.0" text="Set time for notifications" />
+                 <TextField fx:id="calHours" layoutX="71.0" layoutY="163.0" prefHeight="26.0" prefWidth="33.0" />
+                 <TextField fx:id="calminutes" layoutX="128.0" layoutY="163.0" prefHeight="26.0" prefWidth="33.0" />
+                 <Label layoutX="116.0" layoutY="167.0" text=":" />
+                     <Label layoutX="168.0" layoutY="167.0" text=":" />
+                     <DatePicker fx:id="caldate" layoutX="184.0" layoutY="163.0" />
+                     <Button layoutX="372.0" layoutY="263.0" mnemonicParsing="false" onMouseClicked="#SubmitButtoncalender" text="Submit" />
+                     <Label fx:id="calmessage" layoutX="26.0" layoutY="280.0" prefHeight="18.0" prefWidth="158.0" />
+                     <Label layoutX="39.0" layoutY="89.0" text="Set Message:" />
+                     <TextField fx:id="calusermessage" layoutX="39.0" layoutY="107.0" prefHeight="26.0" prefWidth="337.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
              </Tab>
            </tabs>
          </TabPane>
       </AnchorPane>
-         <Label layoutX="26.0" layoutY="14.0" prefHeight="18.0" prefWidth="134.0" text="Set Reminder" />
+         <Label layoutX="180.0" layoutY="20.0" prefHeight="27.0" prefWidth="110.0" text="Set Reminder" textFill="WHITE">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
+         <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#viewreminder" text="Back" />
       </children>
    </AnchorPane>
 </AnchorPane>

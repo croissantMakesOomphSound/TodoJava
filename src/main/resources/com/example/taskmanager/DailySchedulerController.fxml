@@ -3,53 +3,60 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calender.DailySchedulerController">
+<AnchorPane prefHeight="425.0" prefWidth="698.0" style="-fx-background-color: linear-gradient(to bottom right, rgb(0,128,255), white);" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.taskmanager.DailySchedulerController">
+    <AnchorPane layoutX="4.0" layoutY="11.0" prefHeight="404.0" prefWidth="119.0" style="-fx-background-color: #333399; -fx-border-color: #333399;-fx-border-radius: 25; -fx-background-radius: 25;">
+        <children>
+            <Label layoutX="14.0" layoutY="141.0" onMouseClicked="#HomeButton" text="Home" textFill="WHITE" />
+            <Label layoutX="7.0" layoutY="184.0" onMouseClicked="#viewreminder" text="view reminder" textFill="WHITE" />
+        </children>
+    </AnchorPane>
+<AnchorPane layoutX="131.0" layoutY="14.0" prefHeight="402.0" prefWidth="582.0" style="-fx-background-radius: 25; -fx-border-radius: 25;-fx-background-color: #007aa5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" prefWidth="800.0" prefHeight="400.0">
-            <HBox spacing="10.0">
-                <DatePicker fx:id="datePicker" onAction="#showTasksForSelectedDate" />
+            <AnchorPane>
                 <Text fx:id="currentDateText" />
-            </HBox>
+            </AnchorPane>
+        <ScrollPane layoutX="11.0" layoutY="169.0" prefHeight="205.0" prefWidth="580">
+                 <TableView fx:id="taskTable" prefHeight="205.0" prefWidth="750.0">
+                     <columns>
+                         <TableColumn fx:id="timeColumn" prefWidth="50" text="Time" />
+                         <TableColumn fx:id="taskColumn" prefWidth="160" text="Task" />
+                         <TableColumn fx:id="categoryColumn" prefWidth="80" text="Category" />
+                         <TableColumn fx:id="notesColumn" prefWidth="160" text="Notes" />
+                         <TableColumn fx:id="completedColumn" prefWidth="70" text="Completed" />
+                         <TableColumn fx:id="editColumn" prefWidth="50" text="Edit" />
+                         <TableColumn fx:id="linkColumn" prefWidth="160" text="link" />
+                     </columns>
+                 </TableView>
+        </ScrollPane>
+             <Button layoutX="511.0" layoutY="98.0" mnemonicParsing="false" onAction="#removeTask" text="Remove" />
+             <TextField fx:id="notesInput" layoutX="308.0" layoutY="98.0" prefWidth="200.0" promptText="Enter notes" />
+             <ChoiceBox fx:id="categoryChoiceBox" layoutX="94.0" layoutY="98.0" prefWidth="150.0" />
+             <TextField fx:id="taskInput" layoutX="308.0" layoutY="65.0" prefWidth="200.0" promptText="Enter task" />
+             <Label layoutX="36.0" layoutY="102.0" text="Category:" textFill="WHITE" />
+             <TextField fx:id="timeInput" layoutX="94.0" layoutY="65.0" prefWidth="100.0" promptText="Enter time" />
+             <DatePicker fx:id="datePicker" layoutX="190.0" layoutY="14.0" onAction="#showTasksForSelectedDate" />
+             <Label layoutX="261.0" layoutY="102.0" text="Notes:" textFill="WHITE" />
+             <Button layoutX="531.0" layoutY="65.0" mnemonicParsing="false" onAction="#addTask" text="Add" />
+             <Label layoutX="265.0" layoutY="69.0" text="Task:" textFill="WHITE" />
 
-            <HBox spacing="10.0">
-                <Label text="Time:" />
-                <TextField fx:id="timeInput" prefWidth="100.0" promptText="Enter time" />
-                <Label text="Task:" />
-                <TextField fx:id="taskInput" prefWidth="200.0" promptText="Enter task" />
-            </HBox>
-
-            <HBox spacing="10.0">
-                <Label text="Category:" />
-                <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
-                <Label text="Notes:" />
-                <TextField fx:id="notesInput" prefWidth="200.0" promptText="Enter notes" />
-                <Button mnemonicParsing="false" onAction="#addTask" text="Add" />
-                <Button mnemonicParsing="false" onAction="#removeTask" text="Remove" />
-            </HBox>
-
-            <ScrollPane VBox.vgrow="ALWAYS">
-                <content>
-                    <TableView fx:id="taskTable" prefHeight="383.0" prefWidth="780.0" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="timeColumn" prefWidth="100.0" text="Time" />
-                            <TableColumn fx:id="taskColumn" prefWidth="200.0" text="Task" />
-                            <TableColumn fx:id="categoryColumn" prefWidth="150.0" text="Category" />
-                            <TableColumn fx:id="notesColumn" prefWidth="300.0" text="Notes" />
-                            <TableColumn fx:id="completedColumn" prefWidth="130.0" text="Completed" />
-                            <TableColumn fx:id="editColumn" prefWidth="80.0" text="Edit" />
-                        </columns>
-                    </TableView>
-                </content>
-            </ScrollPane>
-
-            <HBox spacing="10.0">
-                <Label text="Progress for selected date:" />
-                <Text fx:id="progressText" />
-            </HBox>
-        </VBox>
+             <Label layoutX="58.0" layoutY="73.0" text="Time:" textFill="WHITE" />
+         <Button layoutX="21.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#HomeButton" text="Back" />
+         <Button layoutX="157.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#backoneday" text="&lt;" />
+         <Button layoutX="372.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#forwardoneday" text="&gt;" />
+      
+         <HBox layoutX="17.0" layoutY="375.0" prefHeight="26.0" prefWidth="582.0" spacing="10.0">
+             <Label text="Progress for selected date:" textFill="WHITE" />
+             <Text fx:id="progressText" />
+         </HBox>
+         <Button onMouseClicked="#file" layoutX="252.0" layoutY="132.0" mnemonicParsing="false" text="File">
+            <font>
+               <Font size="10.0" />
+            </font>
+         </Button>
+         <TextField fx:id="linkInput" layoutX="95.0" layoutY="132.0" promptText="Enter Link/Hyperlink" />
+         <Label layoutX="58.0" layoutY="136.0" text="Link:" textFill="WHITE" />
+         <Button onMouseClicked="#recommend" layoutX="532.0" layoutY="132.0" mnemonicParsing="false" text="rec." />
     </children>
 </AnchorPane>
-
-
+</AnchorPane>
